@@ -4,24 +4,20 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+return new class extends Migration 
 {
-    /**
-     * Run the migrations.
-     */
+    public $withinTransaction = false; // Hindari transaction abort
+
     public function up(): void
     {
         Schema::create('templates', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_template');
-            $table->longText('isi_template');
+            $table->string('nama_template', 191);
+            $table->text('isi_template'); // longText -> text
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('templates');

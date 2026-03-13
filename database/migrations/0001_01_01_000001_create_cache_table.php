@@ -4,32 +4,31 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+return new class extends Migration 
 {
-    /**
-     * Run the migrations.
-     */
+    // Hindari abort transaction di PostgreSQL
+    public $withinTransaction = false;
+
     public function up(): void
     {
+        // Cache table
         Schema::create('cache', function (Blueprint $table) {
-            $table->string('key')->primary();
-            $table->mediumText('value');
+            $table->string('key', 191)->primary(); // panjang ditentukan
+            $table->text('value'); // mediumText -> text di PGSQL
             $table->integer('expiration')->index();
         });
 
+        // Cache locks
         Schema::create('cache_locks', function (Blueprint $table) {
-            $table->string('key')->primary();
-            $table->string('owner');
+            $table->string('key', 191)->primary(); // panjang ditentukan
+            $table->string('owner', 255);
             $table->integer('expiration')->index();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('cache');
         Schema::dropIfExists('cache_locks');
+        Schema::dropIfExists('cache');
     }
 };
